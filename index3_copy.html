@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Mapping with D3</title>
+	<script src="http://d3js.org/d3.v4.min.js" charset="utf-8"></script>
+	<script src="https://d3js.org/topojson.v2.min.js" charset="utf-8"></script>
+	<script src="data/Neighborhood_Clusters.geojson"></script>
+	<script src="data/Capital_Bike_Share_Locations.geojson"></script>
+	<script src="test_merge.json"></script>
+
+
+	<style>
+
+		body {
+		    position: absolute;
+		    font-family: "Proxima Nova", "Montserrat", sans-serif;
+		}
+		h1, h2 {
+		    position: absolute;
+		    left: 10px;
+		    font-size: 1.8em;
+		    /*font-weight: 100;*/
+		}
+		h2 {
+		    top: 200px;
+		    left: 700px;
+		    font-size: 1em;
+		}
+
+		.neighborhoods {
+			fill: #95c485;
+			opacity: 0.5;
+		}
+		.neighbor_hover {
+			fill: black;
+			opacity: 0.3;
+		}
+
+		
+		.hover {
+		    fill: red;
+		    size: 5.5px;
+		    opacity: 0.5;   
+		}
+
+		.bikeStation {
+	        fill: yellow;
+	    }
+
+		}
+		
+
+		.plane {
+			  fill: #fff;
+			  stroke-width: 0;
+			}
+	</style>
+
+</head>
+
+
+
+
+
+
+<body>
+	<!-- Page elements and content go here. -->
+	<h1>Capital Bike Dock Locations</h1>
+	<h2></h2>
+
+	<script>
+		// Width and Height of the whole visualization
+  var width = 900;
+  var height = 680;
+
+  // Create SVG
+  var svg = d3.select( "body" )
+      .append( "svg" )
+      .attr( "width", width )
+      .attr( "height", height );
+
+  // Append empty placeholder g element to the SVG
+  // g will contain geometry elements
+  var g = svg.append( "g" );
+
+
+
+  // Width and Height of the whole visualization
+  // Set Projection Parameters
+
+  var Projection = d3.geoConicConformal()
+      .scale( 690000 )
+     .rotate([77, 0])
+      .center([-0.03, 38.90])
+      .parallels([38.3, 39.45])
+      .translate( [width/2,height/2] );
+
+
+  // Create GeoPath function that uses built-in D3 functionality to turn
+  // lat/lon coordinates into screen coordinates
+  var geoPath = d3.geoPath()
+      .projection( Projection );
+
+  // Classic D3... Select non-existent elements, bind the data, append the elements, and apply attributes
+  g.selectAll( "path" )
+      .data( neighborhoods_json.features )
+      .enter()
+      .append( "path" )
+      // .attr( "fill", "grey" )
+      .attr( "stroke", "white")
+      // .attr("opacity", "0.5")
+      .attr( "d", geoPath )
+      .attr( "class", "neighborhoods")
+      .on("mouseover", function(d){
+        d3.select("h2").text(d.properties.NBH_NAMES);
+        d3.select(this).attr("class","neighbor_hover");
+      })
+      .on("mouseout", function(d){
+      d3.select("h2").text("");
+      d3.select(this).attr("class","neighborhoods");
+      });
+
+
+  var locations = svg.append( "g" );
+
+	locations.selectAll( "path" )
+		.data( dock_locations.features )
+		 .enter()
+		.append( "path" )
+		.attr( "fill", "red" )
+		.attr( "stroke", "white" )
+		.attr( "d", geoPath )
+		.attr( "class", "bikeStation")
+
+
+
+		.on("mouseover", function(d){
+				d3.select("h2").text(d.properties.ADDRESS);
+				d3.select(this).attr("class","hover");
+			})
+		.on("mouseout", function(d){
+			d3.select("h2").text("");
+			d3.select(this).attr("class","bikeStation");
+			});
+
+
+
+
+// var origin = [ -77.0322, 38.9268];
+// var	destination = [-77.026235, 38.898243];
+
+
+// var origin = 
+// [
+//   [-77.032429,38.888553  ],
+//   [-77.00493,38.89696  ],
+//   [-76.994749,38.897274  ],
+//   [-77.02858,38.888767  ],
+//   [-77.049426,38.888251  ],
+//   [-77.032429,38.888553  ],
+//   [-77.042581,38.922925  ],
+//   [-77.049426,38.888251  ],
+//   [-76.995397,38.884  ],
+//   [-77.050046,38.923583  ],
+//   [-77.0444,38.9101  ],
+//   [-77.017253,38.890493  ],
+//   [-76.991383,38.899983  ],
+//   [-76.9929,38.896134  ],
+//   [-77.049426,38.888251  ],
+//   [-76.988355,38.890461  ],
+//   [-77.03818,38.91554  ],
+//   [-77.034438,38.90985  ],
+//   [-77.00493,38.89696  ],
+//   [-77.037413,38.879819  ],
+//   [-77.00493,38.89696  ],
+//   [-77.00493,38.89696  ],
+//   [-77.037413,38.879819  ],
+//   [-77.038325,38.888097  ],
+//   [-76.987633,38.894832  ],
+//   [-77.02858,38.888767  ],
+//   [-77.00493,38.89696  ],
+//   [-77.017445,38.88412  ],
+//   [-77.00493,38.89696  ],
+//   [-76.997114,38.894758  ],
+//   [-77.038325,38.888097  ],
+//   [-77.04657,38.88412  ],
+//   [-77.0178,38.8767  ],
+//   [-76.983575,38.897195  ],
+//   [-77.03023,38.878433  ],
+//   [-77.049426,38.888251  ],
+//   [-77.037413,38.879819  ],
+//   [-76.988355,38.890461  ],
+//   [-76.995397,38.884  ],
+//   [-77.006472,38.977933  ],
+//   [-77.02227,38.905737  ],
+//   [-77.016855,38.975219  ],
+//   [-77.034438,38.90985  ],
+//   [-77.03818,38.91554  ],
+//   [-77.017445,38.88412  ],
+//   [-77.00493,38.89696  ],
+//   [-77.049379,38.890544  ],
+//   [-77.069956,38.955016  ],
+//   [-77.049379,38.890544  ],
+//   [-77.03818,38.91554  ],
+//   [-77.0387,38.9121  ],
+//   [-77.02823,38.887237  ],
+//   [-77.016855,38.975219  ],
+//   [-77.00989,38.897446  ]
+// ];
+// var	destination = 
+// [
+//   [-77.032429,38.888553  ],
+//   [-76.994749,38.897274  ],
+//   [-77.00493,38.89696  ],
+//   [-77.02858,38.888767  ],
+//   [-77.037413,38.879819  ],
+//   [-77.049426,38.888251  ],
+//   [-77.050046,38.923583  ],
+//   [-77.032429,38.888553  ],
+//   [-76.988355,38.890461  ],
+//   [-77.042581,38.922925  ],
+//   [-77.034438,38.90985  ],
+//   [-77.017253,38.890493  ],
+//   [-77.00493,38.89696  ],
+//   [-77.00493,38.89696  ],
+//   [-77.049426,38.888251  ],
+//   [-76.995397,38.884  ],
+//   [-77.0444,38.9101  ],
+//   [-77.0444,38.9101  ],
+//   [-76.991383,38.899983  ],
+//   [-77.037413,38.879819  ],
+//   [-76.9929,38.896134  ],
+//   [-76.987633,38.894832  ],
+//   [-77.049426,38.888251  ],
+//   [-77.049426,38.888251  ],
+//   [-77.00493,38.89696  ],
+//   [-77.049426,38.888251  ],
+//   [-77.001949,38.900412  ],
+//   [-77.0178,38.8767  ],
+//   [-76.998347,38.899972  ],
+//   [-77.00493,38.89696  ],
+//   [-77.038325,38.888097  ],
+//   [-77.04657,38.88412  ],
+//   [-77.017445,38.88412  ],
+//   [-77.00493,38.89696  ],
+//   [-77.03023,38.878433  ],
+//   [-77.02858,38.888767  ],
+//   [-77.032429,38.888553  ],
+//   [-77.00493,38.89696  ],
+//   [-76.987633,38.894832  ],
+//   [-77.016855,38.975219  ],
+//   [-77.0325,38.9059  ],
+//   [-77.006472,38.977933  ],
+//   [-77.041834,38.912648  ],
+//   [-77.0387,38.9121  ],
+//   [-77.00493,38.89696  ],
+//   [-76.983575,38.897195  ],
+//   [-77.032429,38.888553  ],
+//   [-77.063896,38.944551  ],
+//   [-77.049379,38.890544  ],
+//   [-77.034438,38.90985  ],
+//   [-77.03863,38.90276  ],
+//   [-77.00493,38.89696  ],
+//   [-77.011336,38.98128  ],
+//   [-77.0056,38.9057  ]
+// ];
+// var destination_ = new Array(20);
+// for (i =0; i<54; i++){
+// 	//Projection(origin[i]);
+// 	//console.log(Projection(origin[i]));
+// 	destination_[i] = Projection(destination[i]);
+// };
+
+
+// var origin_ = new Array(20);
+// for (i =0; i<54; i++){
+// 	//Projection(origin[i]);
+// 	//console.log(Projection(origin[i]));
+// 	origin_[i] = Projection(origin[i]);
+// };
+// //console.log(origin_);
+
+
+
+
+// //draw the most popular stations on map
+// //console.log(origin[0]);
+// // for (i = 0; t<; i++){
+// for (i = 0; i<54; i++){
+// 		var start = svg.append("g");
+// 			start.selectAll("circle")
+// 				.data([origin_])
+// 				 .enter()
+// 				.append("circle")
+// 				.attr("cx",  origin_[i][0] )
+// 				.attr("cy", origin_[i][1])
+
+// 				.attr("r", "5px")
+// 				.attr("stroke", "none")
+// 				.attr("fill", "#2d519a");
+
+// 		var end = svg.append("g");
+// 				end.selectAll("circle")
+// 				.data([,destination_]).enter()
+// 				.append("circle")
+// 				.attr("cx",   destination_[i][0])
+// 				.attr("cy",  destination_[i][1])
+// 				.attr("r", "5px")
+// 				.attr("stroke", "none")
+// 				.attr("fill", "#2d519a");
+
+// 	var route = svg.append("path")
+// 	               .datum({type: "LineString", coordinates: [origin[i], destination[i]]})
+// 	               .attr("class", "route")
+// 	               .attr("d", geoPath)
+// 	               .attr("stroke", "white")
+// 	               .attr("stroke-width", "1.5px")
+// 	               .attr("fill", "white");
+
+
+
+// 	var totalLength = route.node().getTotalLength();
+// 	var l = route.node().getTotalLength();
+// 	route
+// 	      .attr("stroke-dasharray", totalLength + "," + totalLength)
+// 	      .attr("stroke-dashoffset", totalLength)
+// 	      .transition()
+// 	      //.duration(l * 100)
+// 	      //.ease(d3.easeCubic)
+// 	      .attr("stroke-dashoffset", totalLength*2)
+// 	      .transition()
+// 	      .duration(l * 1000)
+// 	      .attr("stroke-dashoffset", totalLength*3);
+
+
+
+
+
+// var plane = svg.append("path")
+//                    .attr("class", "plane")
+//                      .attr("d", "m25.21488,3.93375c-0.44355,0 -0.84275,0.18332 -1.17933,0.51592c-0.33397,0.33267 -0.61055,0.80884 -0.84275,1.40377c-0.45922,1.18911 -0.74362,2.85964 -0.89755,4.86085c-0.15655,1.99729 -0.18263,4.32223 -0.11741,6.81118c-5.51835,2.26427 -16.7116,6.93857 -17.60916,7.98223c-1.19759,1.38937 -0.81143,2.98095 -0.32874,4.03902l18.39971,-3.74549c0.38616,4.88048 0.94192,9.7138 1.42461,13.50099c-1.80032,0.52703 -5.1609,1.56679 -5.85232,2.21255c-0.95496,0.88711 -0.95496,3.75718 -0.95496,3.75718l7.53,-0.61316c0.17743,1.23545 0.28701,1.95767 0.28701,1.95767l0.01304,0.06557l0.06002,0l0.13829,0l0.0574,0l0.01043,-0.06557c0,0 0.11218,-0.72222 0.28961,-1.95767l7.53164,0.61316c0,0 0,-2.87006 -0.95496,-3.75718c-0.69044,-0.64577 -4.05363,-1.68813 -5.85133,-2.21516c0.48009,-3.77545 1.03061,-8.58921 1.42198,-13.45404l18.18207,3.70115c0.48009,-1.05806 0.86881,-2.64965 -0.32617,-4.03902c-0.88969,-1.03062 -11.81147,-5.60054 -17.39409,-7.89352c0.06524,-2.52287 0.04175,-4.88024 -0.1148,-6.89989l0,-0.00476c-0.15655,-1.99844 -0.44094,-3.6683 -0.90277,-4.8561c-0.22699,-0.59493 -0.50356,-1.07111 -0.83754,-1.40377c-0.33658,-0.3326 -0.73578,-0.51592 -1.18194,-0.51592l0,0l-0.00001,0l0,0z");
+
+
+
+// function delta(plane, path) {
+//     var l = path.getTotalLength();
+//     var plane = plane;
+//     return function(i) {
+//       return function(t) {
+//         var p = path.getPointAtLength(t * l);
+
+//         var t2 = Math.min(t + 0.05, 1);
+//         var p2 = path.getPointAtLength(t2 * l);
+
+//         var x = p2.x - p.x;
+//         var y = p2.y - p.y;
+//         var r = 90 - Math.atan2(-y, x) * 180 / Math.PI;
+
+//         var s = Math.min(Math.sin(Math.PI * t) * 0.7, 0.3);
+
+//         return "translate(" + p.x + "," + p.y + ") scale(" + s + ") rotate(" + r + ")";
+//       }
+//     }
+//   }
+
+
+
+// var l = route.node().getTotalLength();
+//     plane.transition()
+//         .duration(l * 100)
+//         .attrTween("transform", delta(plane, route.node()));
+//         // .each("end", function() { route.remove(); })
+//         // .remove();
+
+
+
+
+// }
+	</script>	
+
+
+
+	<p>
+		<a name="Popular"> This dynamic picture shows the top 50 popular paths in the D.C. area. Let’s tell you top 7 most popular path. 
+	<p>1.	Jefferson Dr 14th St SW &#8594; Jefferson Dr</p>
+	<p>2.   Union Station &#8594; 8th & F St NE</p>	
+	<p>3.	Smithsonian-National Mall </p>
+	<p>4.	Lincoln Memorial &#8594; Jefferson Memorial</p>
+	<p>5.	Jefferson Dr with 14th St SW &#8594; Lincoln Memorial</p>  
+	<p>6.	Adams Mill with Columbia Rd NW &#8594; Calvert St with Woodley Pl NW</p>
+	<p>7.	Lincoln Memorial &#8594; Jefferson Dr & 14th St SW</p>
+
+
+</a>
+
+	</p>
+</body>
+</html>

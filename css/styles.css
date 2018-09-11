@@ -1,0 +1,95 @@
+.neighborhoods {
+			fill: #95c485;
+			opacity: 0.5;
+		}
+		.neighbor_hover {
+			fill: black;
+			opacity: 0.3;
+		}
+
+		.dock {
+	        fill: #e77333;
+	    }
+
+		}
+		.hover {
+		    fill: red;
+		    size: 5.5px;
+		    opacity: 0.5;   
+		}
+
+		.plane {
+			  fill: #fff;
+			  stroke-width: 0;
+			}
+
+
+		.rectangle {
+		  fill: steelblue;
+		}
+		.rectangle:hover {
+		  fill: orange;
+		}
+		.axis {
+		  font: 10px sans-serif;
+		}
+
+		.axis path,
+		.axis line {
+		  fill: none; 
+		  stroke: #000;
+		  shape-rendering: crispEdges;
+		}
+
+
+		.line {
+		  fill: none;
+		  stroke: steelblue;
+		  stroke-width: 2px;
+		}
+
+		div.tooltip {
+		  position: absolute;
+		  text-align: center;
+		  width: 60px;
+		  height: 28px;
+		  padding: 2px;
+		  font: 12px sans-serif;
+		  background: lightsteelblue;
+		  border: 0px;
+		  border-radius: 8px;
+		  pointer-events: none;
+		}
+
+
+
+
+
+
+
+
+
+a {text-decoration: none;}
+
+img{margin:auto;}
+
+	<title> capital</title>
+	body {
+  padding: 20px;
+}
+button {
+	height: 60px;
+	width: 120px;
+	/*size: 20px;*/
+	font-size: 18px
+  margin-top: 10px;
+  line-height: 40px;
+  font-weight: bold;
+ 
+  background: white;
+  border: none;
+
+}
+button:hover {
+  background: lightgrey;
+}

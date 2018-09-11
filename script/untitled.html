@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<link href="css/styles.css" rel="stylesheet" type="text/css">
+
+	<title>Mapping with D3</title>
+	<script src="http://d3js.org/d3.v4.min.js" charset="utf-8"></script>
+	<script src="data/Neighborhood_Clusters.geojson"></script>
+	<script src="data/Capital_Bike_Share_Locations.geojson"></script>
+
+
+	<style>
+
+		body {
+		    position: absolute;
+		    font-family: "Proxima Nova", "Montserrat", sans-serif;
+		}
+		h1{
+		    /*//position: absolute;*/
+		    /*top: 100px;*/
+		    color: red;
+		    left: 100px;
+		    font-size: 2.8em;
+		    font-weight: 30;
+		}
+	/*	h2 {
+		    position: absolute;
+		    left: 10px;
+		    font-size: 1.8em;
+		    
+		}*/
+		h2 {
+			/*position: absolute;*/
+		    top: 100px;
+		    left: 800px;
+		    font-size: 1em;
+		}
+		h3 {
+		    top: 250px;
+		    left: 700px;
+		    font-size: 2em;
+		}
+		.neighborhoods {
+			fill: #95c485;
+			opacity: 0.5;
+		}
+		.neighbor_hover {
+			fill: black;
+			opacity: 0.3;
+		}
+
+		.dock {
+	        fill: #e77333;
+	    }
+
+		}
+		.hover {
+		    fill: red;
+		    size: 5.5px;
+		    opacity: 0.5;   
+		}
+
+		.plane {
+			  fill: #fff;
+			  stroke-width: 0;
+			}
+
+
+		.rectangle {
+		  fill: steelblue;
+		}
+		.rectangle:hover {
+		  fill: orange;
+		}
+		.axis {
+		  font: 10px sans-serif;
+		}
+
+		.axis path,
+		.axis line {
+		  fill: none; 
+		  stroke: #000;
+		  shape-rendering: crispEdges;
+		}
+
+
+		.line {
+		  fill: none;
+		  stroke: steelblue;
+		  stroke-width: 2px;
+		}
+
+		div.tooltip {
+		  position: absolute;
+		  text-align: center;
+		  width: 60px;
+		  height: 28px;
+		  padding: 2px;
+		  font: 12px sans-serif;
+		  background: lightsteelblue;
+		  border: 0px;
+		  border-radius: 8px;
+		  pointer-events: none;
+		}
+
+
+		
+	</style>
+
+</head>
+
+
+
+
+<body>
+	
+<script>
+
+
+
+	// Width and Height of the whole visualization
+	var width = 600;
+	var height = 580;
+
+
+	var margin = {top: 20, right: 20, bottom: 20, left: 10},
+	 width = 1000 - margin.left - margin.right,
+     height = 780 - margin.top - margin.bottom;
+
+	// Create SVG
+	var svg = d3.select( "body" )
+	    .append( "svg" )
+	    .attr( "width", width )
+	    .attr( "height", height );
+
+	// Append empty placeholder g element to the SVG
+	// g will contain geometry elements
+	var g = svg.append( "g" );
+
+
+
+	// Width and Height of the whole visualization
+	// Set Projection Parameters
+
+	var Projection = d3.geoConicConformal()
+	    .scale( 290000 )
+	   .rotate([77, 0])
+	    .center([-0.05, 38.91])
+	    .parallels([38.3, 39.45])
+	    .translate( [width/2,height/2] );
+
+	   
+
+	// Create GeoPath function that uses built-in D3 functionality to turn
+	// lat/lon coordinates into screen coordinates
+	var geoPath = d3.geoPath()
+	    .projection( Projection );
+
+	// Classic D3... Select non-existent elements, bind the data, append the elements, and apply attributes
+	g.selectAll( "path" )
+	    .data( neighborhoods_json.features )
+	    .enter()
+	    .append( "path" )
+	    // .attr( "fill", "grey" )
+	    .attr( "stroke", "white")
+	     .attr("opacity", "0.5")
+	    .attr( "d", geoPath )
+	    .attr( "class", "neighborhoods")
+	    .on("mouseover", function(d){
+				d3.select("h2").text(d.properties.NBH_NAMES);
+				d3.select(this).attr("class","neighbor_hover");
+			})
+	    .on("mouseout", function(d){
+			d3.select("h2").text("");
+			d3.select(this).attr("class","neighborhoods");
+			});
+
+
+
+	var locations = svg.append( "g" );
+
+	locations.selectAll( "path" )
+		.data( dock_locations.features )
+		.enter()
+		.append( "path" )
+		//.attr("size", "3.5px")
+		//.attr( "fill", "red" )
+		.attr( "stroke", "white" )
+		.attr( "d", geoPath )
+		.attr( "class", "dock")
+
+
+		.on("mouseover", function(d){
+				d3.select("h2").text(d.properties.ADDRESS);
+				d3.select(this).attr("class","hover");
+			})
+		.on("mouseout", function(d){
+			d3.select("h2").text("");
+			d3.select(this).attr("class","dock");
+			});
+
+
+
+
+
+
+		
+
+
+</script>
+
+
+
+
+
+
+
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
