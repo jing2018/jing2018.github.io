@@ -1,4 +1,4 @@
-
+document.addEventListener('DOMContentLoaded', function(e) {
 
 	// Width and Height of the whole visualization
 	var width = 600;
@@ -83,7 +83,7 @@
 
 
 
-
+});
 
 
 		
